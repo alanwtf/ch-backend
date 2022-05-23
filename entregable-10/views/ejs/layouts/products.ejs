@@ -1,0 +1,32 @@
+<html lang="en">
+    <%- include("../partials/head.ejs") %>
+    <body>
+        <%- include("../partials/header.ejs")%>
+        <div class="container jumbotron mt-4">
+            <% if(productos.length){ %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% productos.forEach((prod=>{ %>
+                    <tr>
+                        <th scope="row"><%= prod.id %></th>
+                        <td><%= prod.title %></td>
+                        <td>$ <%= prod.price %></td>
+                        <td><img src="<%= prod.thumbnail %>" /></td>
+                    </tr>
+                    <% })) %>
+                </tbody>
+            </table>
+            <% }else{ %>
+            <h2>No se encontraron productos</h2>
+            <% } %>
+        </div>
+    </body>
+</html>

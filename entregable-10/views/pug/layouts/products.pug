@@ -1,0 +1,21 @@
+extends ../index.pug
+block content
+    .container.jumbotron.mt-4
+        if productos.length
+            table.table
+                thead
+                    tr
+                        th(scope='col') #
+                        th(scope='col') Titulo
+                        th(scope='col') Precio
+                        th(scope='col') URL
+                tbody
+                    each prod in productos
+                        tr
+                            th(scope='row')=prod.id
+                            td=prod.title
+                            td=`$ ${prod.price}`
+                            td
+                                img(src=prod.thumbnail)          
+        else
+            h2 No se encontraron productos

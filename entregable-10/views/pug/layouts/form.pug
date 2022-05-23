@@ -1,0 +1,15 @@
+extends ../index.pug 
+
+block content
+    .jumbotron.container.mt-4
+        form(action='/productos' method='POST')
+            .form-group
+            label(for='title') Titulo
+            input#title.form-control(type='text' name='title' placeholder='Ingresar titulo del producto' required='')
+            .form-group
+            label(for='price') Precio
+            input#price.form-control(type='number' name='price' placeholder='Ingresar precio del producto' required='')
+            .form-group
+            label(for='thumbnail') URL
+            input#thumbnail.form-control(type='text' name='thumbnail' placeholder='Ingresar URL del producto' required='')
+            button.btn.btn-primary.mt-2(type='submit') Submit
