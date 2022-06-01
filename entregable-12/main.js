@@ -35,10 +35,6 @@ const products = [];
 const users = [];
 const messages = [];
 
-app.get("/form", (req, res) => {
-    res.render("layouts/main");
-});
-
 app.get("/products", (req, res) => {
     return res.send(products);
 });

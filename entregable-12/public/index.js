@@ -66,12 +66,14 @@ socket.on("success", (data) => {
 });
 
 socket.on("newMessage", (data) => {
-    const message = `
+    if (email) {
+        const message = `
         <span style="color:blue;font-weight:bold">${data.email}</span> 
         <span style="color:brown;font-size:12px">[${data.time}]</span>: 
         <span style="color:green;font-style:italic">${data.message}</span>
         <br>`;
-    messages.innerHTML += message;
+        messages.innerHTML += message;
+    }
 });
 
 const enableBtn = (e, btn) => {
@@ -105,7 +107,7 @@ const template = Handlebars.compile(`
         <tr>
             <th scope="row">{{this.id}}</th>
             <td>{{this.title}}</td>
-            <td> {{this.price}}</td>
+            <td>$ {{this.price}}</td>
             <td><img src="{{this.thumbnail}}" /></td>
         </tr>
     {{/each}}
