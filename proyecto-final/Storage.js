@@ -35,7 +35,7 @@ class Storage {
 
     getProductById = async (id) => {
         let arr = await this.getFile(this.productsFilename);
-        let product = arr.filter((product) => product.id === Number(id));
+        let product = arr.find((product) => product.id === Number(id));
         return product;
     };
 
@@ -81,11 +81,9 @@ class Storage {
         const cartArr = await this.getFile(this.cartsFilename);
         const newCart = {};
         const lastId = cartArr.length > 0 ? cartArr[cartArr.length - 1].id : 0;
-
         newCart.id = lastId + 1;
         newCart.created_at = Date.now();
         newCart.products = [];
-
         cartArr.push(newCart);
         await this.saveFile(cartArr, this.cartsFilename);
         return newCart.id;
@@ -100,7 +98,6 @@ class Storage {
 
     updateCart = async (id, newCart) => {
         const cartArr = await this.getFile(this.cartsFilename);
-
         const newArr = cartArr.map((cart) => {
             if (Number(id) !== cart.id) return cart;
             else {
@@ -136,6 +133,7 @@ class Storage {
     addCartProduct = async (id, prodId) => {
         const cart = await this.getCartById(Number(id));
         const prod = await this.getProductById(Number(prodId));
+        console.log(prod);
         cart.products.push(prod);
         await this.updateCart(id, cart);
         return;

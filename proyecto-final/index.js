@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/productos", productsRouter);
 app.use("/api/carrito", cartRouter);
+
 //404
 app.use((req, res, next) => {
     return res.json({

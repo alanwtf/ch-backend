@@ -6,7 +6,7 @@ const productsRouter = Router();
 //productsRouter.use(express.json());
 //productsRouter.use(express.urlencoded({ extended: false }));
 
-const admin = false;
+const admin = true;
 
 const storage = new Storage();
 

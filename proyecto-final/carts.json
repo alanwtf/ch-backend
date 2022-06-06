@@ -4,73 +4,15 @@
     "created_at": 1654460711775,
     "products": [
       {
-        "title": "zapatillas",
-        "price": "10000",
-        "id": 1
-      },
-      {
         "name": "zapatillas",
         "description": "20000",
         "code": "123456",
         "photo_url": "https://www.newbalance.com.ar/media/catalog/product/cache/4/image/700x538.46153846154/9df78eab33525d08d6e5fb8d27136e95/z/a/zapatillas-hombre-new-balance-x-90-msx90crh_nb_02_i.jpg",
         "price": "200",
-        "stock": "5",
-        "id": 7,
-        "created_at": 1654459489957,
-        "modified_at": 1654459507072
-      },
-      [
-        {
-          "name": "zapatillas",
-          "description": "20000",
-          "code": "123456",
-          "photo_url": "https://www.newbalance.com.ar/media/catalog/product/cache/4/image/700x538.46153846154/9df78eab33525d08d6e5fb8d27136e95/z/a/zapatillas-hombre-new-balance-x-90-msx90crh_nb_02_i.jpg",
-          "price": "200",
-          "stock": "5",
-          "id": 7,
-          "created_at": 1654459489957,
-          "modified_at": 1654459507072
-        }
-      ],
-      [
-        {
-          "name": "zapatillas",
-          "description": "20000",
-          "code": "123456",
-          "photo_url": "https://www.newbalance.com.ar/media/catalog/product/cache/4/image/700x538.46153846154/9df78eab33525d08d6e5fb8d27136e95/z/a/zapatillas-hombre-new-balance-x-90-msx90crh_nb_02_i.jpg",
-          "price": "200",
-          "stock": "5",
-          "id": 7,
-          "created_at": 1654459489957,
-          "modified_at": 1654459507072
-        }
-      ],
-      [
-        {
-          "name": "zapatillas",
-          "description": "20000",
-          "code": "123456",
-          "photo_url": "https://www.newbalance.com.ar/media/catalog/product/cache/4/image/700x538.46153846154/9df78eab33525d08d6e5fb8d27136e95/z/a/zapatillas-hombre-new-balance-x-90-msx90crh_nb_02_i.jpg",
-          "price": "200",
-          "stock": "5",
-          "id": 7,
-          "created_at": 1654459489957,
-          "modified_at": 1654459507072
-        }
-      ]
-    ],
-    "modified_at": 1654467374192
-  },
-  {
-    "id": 2,
-    "created_at": 1654460711775,
-    "products": [
-      {
-        "title": "alfajor",
-        "price": "120",
-        "id": 4
+        "stock": "9",
+        "id": 2,
+        "created_at": 1654553313700
       }
-    ],
-    "modified_at": 1654463657417
+    ]
   }
 ]
