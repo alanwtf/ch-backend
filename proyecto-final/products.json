@@ -1,0 +1,22 @@
+[
+  {
+    "title": "zapatillas",
+    "price": "10000",
+    "id": 1
+  },
+  {
+    "title": "alfajor",
+    "price": "120",
+    "id": 4
+  },
+  {
+    "title": "zapatillas",
+    "price": "10000",
+    "id": 5
+  },
+  {
+    "title": "zapatillas",
+    "price": "10000",
+    "id": 6
+  }
+]
