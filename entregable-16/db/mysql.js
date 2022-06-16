@@ -12,7 +12,7 @@ const mysqlConfig = {
 const sqliteConfig = {
   client: "sqlite3",
   connection: {
-    filename: "./mydb.sqlite",
+    filename: "./ecommerce.sqlite",
   },
   useNullAsDefault: true,
 };
