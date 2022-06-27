@@ -1,36 +1,34 @@
 const express = require("express");
 const { Router } = express;
 const cartRouter = Router();
-const cartDaoFiles = require("../daos/cartDaoFiles");
+const { carts } = require("../daos")();
 
 // cartRouter.use(express.json());
 //cartRouter.use(express.urlencoded({ extended: true }));
 
-const cartDao = new cartDaoFiles();
-
 cartRouter.post("/", async (req, res) => {
-    const newCartId = await cartDao.createItem({});
+    const newCartId = await carts.createItem({});
     res.json(newCartId);
 });
 
 cartRouter.delete("/:id", async (req, res) => {
-    await cartDao.deleteItem(req.params.id);
+    await carts.deleteItem(req.params.id);
     return res.sendStatus(204);
 });
 
 cartRouter.get("/:id/productos", async (req, res) => {
-    const products = await cartDao.getCartProducts(req.params.id);
+    const products = await carts.getCartProducts(req.params.id);
     console.log(products);
     return res.json(products);
 });
 
 cartRouter.delete("/:id/productos/:id_prod", async (req, res) => {
-    await cartDao.deleteCartProduct(req.params.id, req.params.id_prod);
+    await carts.deleteCartProduct(req.params.id, req.params.id_prod);
     return res.sendStatus(204);
 });
 
 cartRouter.post("/:id/productos/", async (req, res) => {
-    await cartDao.addCartProduct(req.params.id, req.body);
+    await carts.addCartProduct(req.params.id, req.body);
     return res.sendStatus(204);
 });
 

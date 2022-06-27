@@ -1,6 +1,6 @@
 const FileContainer = require("../containers/FileContainer");
 
-const productsDaoFiles = require("./productsDaoFiles");
+const productsDaoFiles = require("./ProductsDaoFiles");
 const productsDao = new productsDaoFiles();
 
 class cartDaoFiles extends FileContainer {

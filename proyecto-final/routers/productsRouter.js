@@ -2,29 +2,27 @@ const express = require("express");
 const { Router } = express;
 const productsRouter = Router();
 const isAdmin = require("../middlewares/isAdminMiddleware");
-const productsDaoFiles = require("../daos/productsDaoFiles");
-
-const productsDao = new productsDaoFiles();
+const { products } = require("../daos")();
 
 productsRouter.get("/:id?", async (req, res) => {
     if (req.params.id) {
-        return res.json(await productsDao.getItemById(req.params.id));
+        return res.json(await products.getItemById(req.params.id));
     }
-    return res.json(await productsDao.getItems());
+    return res.json(await products.getItems());
 });
 
 productsRouter.post("/", isAdmin, async (req, res) => {
-    const newId = await productsDao.createItem(req.body);
+    const newId = await products.createItem(req.body);
     return res.json(newId);
 });
 
 productsRouter.put("/:id", isAdmin, async (req, res) => {
-    await productsDao.updateItem(req.params.id, req.body);
+    await products.updateItem(req.params.id, req.body);
     return res.sendStatus(204);
 });
 
 productsRouter.delete("/:id", isAdmin, async (req, res) => {
-    await productsDao.deleteItem(req.params.id);
+    await products.deleteItem(req.params.id);
     return res.sendStatus(204);
 });
 
