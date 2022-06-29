@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
-
+const Database = require("./db/mongodb");
 const productsRouter = require("./routers/productsRouter");
 const cartRouter = require("./routers/cartRouter");
 
 const error404Middleware = require("./middlewares/error404Middleware");
 const PORT = process.env.PORT || 8080;
+
+if (process.env.STORAGE === "mongodb") Database.connect();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

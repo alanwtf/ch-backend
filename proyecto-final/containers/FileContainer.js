@@ -47,12 +47,11 @@ class FileContainer {
 
     updateItem = async (id, newItem) => {
         const itemArr = await this.getItems();
+        console.log("HOLI");
         const newArr = itemArr.map((item) => {
             if (Number(id) !== item.id) return item;
             else {
-                newItem.id = item.id;
-                newItem.created_at = item.created_at;
-                return newItem;
+                return Object.assign(item, newItem);
             }
         });
         this.saveItems(newArr);

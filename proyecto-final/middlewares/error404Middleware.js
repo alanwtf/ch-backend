@@ -1,3 +1,5 @@
+//manejar errores como el profe
+
 const error404Middleware = (req, res, next) => {
     return res.json({
         error: -2,

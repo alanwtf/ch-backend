@@ -18,7 +18,6 @@ cartRouter.delete("/:id", async (req, res) => {
 
 cartRouter.get("/:id/productos", async (req, res) => {
     const products = await carts.getCartProducts(req.params.id);
-    console.log(products);
     return res.json(products);
 });
 

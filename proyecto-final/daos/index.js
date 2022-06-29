@@ -1,13 +1,14 @@
-const cartDaoFiles = require("./CartDaoFiles");
-const productsDaoFiles = require("./ProductsDaoFiles");
-const productsDaoMemory = require("./ProductsDaoMemory");
-const cartDaoMemory = require("./CartDaoMemory");
+const cartDaoFiles = require("./carts/CartDaoFiles");
+const productsDaoFiles = require("./products/ProductsDaoFiles");
+const productsDaoMemory = require("./products/ProductsDaoMemory");
+const cartDaoMemory = require("./carts/CartDaoMemory");
+const productsDaoMongoDB = require("./products/ProductsDaoMongoDB");
+const cartDaoMongoDB = require("./carts/CartDaoMongoDB");
 
 const getStorage = () => {
     const storage = process.env.STORAGE;
     switch (storage) {
         case "archivo":
-            console.log("Entre");
             return {
                 products: new productsDaoFiles("products.json"),
                 carts: new cartDaoFiles("cats.json"),
@@ -16,6 +17,11 @@ const getStorage = () => {
             return {
                 products: new productsDaoMemory(),
                 carts: new cartDaoMemory(),
+            };
+        case "mongodb":
+            return {
+                products: new productsDaoMongoDB(),
+                carts: new cartDaoMongoDB(),
             };
     }
 };

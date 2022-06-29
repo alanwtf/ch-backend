@@ -1,4 +1,4 @@
-const MemoryContainer = require("../containers/MemoryContainer");
+const MemoryContainer = require("../../containers/MemoryContainer");
 
 class productsDaoMemory extends MemoryContainer {
     constructor() {

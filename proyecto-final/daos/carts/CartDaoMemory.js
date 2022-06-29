@@ -1,4 +1,4 @@
-const MemoryContainer = require("../containers/MemoryContainer");
+const MemoryContainer = require("../../containers/MemoryContainer");
 
 class CartDaoMemory extends MemoryContainer {
     constructor() {
@@ -7,7 +7,6 @@ class CartDaoMemory extends MemoryContainer {
 
     deleteCartProduct = (id, prodId) => {
         const cart = this.getItemById(id);
-        console.log({ cart });
         const newCartArr = cart.products.filter(
             (prod) => prod.id !== Number(prodId)
         );
@@ -26,7 +25,6 @@ class CartDaoMemory extends MemoryContainer {
         const cart = this.getItemById(Number(id));
         cart.products ??= [];
         cart.products.push(prod);
-        console.log(cart.products.length);
         this.updateItem(id, cart);
         return;
     };
