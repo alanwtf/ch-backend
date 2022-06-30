@@ -1,7 +1,7 @@
 const MongoContainer = require("../../containers/MongoContainer");
 const Cart = require("../../models/cart");
 
-class ProductsDaoMongoDB extends MongoContainer {
+class CartDaoMongoDB extends MongoContainer {
     constructor() {
         super(Cart);
     }
@@ -38,4 +38,4 @@ class ProductsDaoMongoDB extends MongoContainer {
     };
 }
 
-module.exports = ProductsDaoMongoDB;
+module.exports = CartDaoMongoDB;
