@@ -14,6 +14,7 @@
         <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
         <link rel="stylesheet" href="./styles.css" />
         <title>Websockets</title>
+        <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
     </head>
     <body>
         <div class="container">
@@ -77,20 +78,51 @@
             <!--CHAT-->
             <div class="jumbotron">
                 <h2 class="mb-3">Chat</h2>
+                <h4 id="compression"></h4>
                 <span id="notifications"></span>
-                <div class="input-group mb-3" id="loginInputGroup">
+                <div class="mb-3" id="loginInputGroup">
+                    <input
+                        type="email"
+                        class="form-control"
+                        placeholder="Ingresar email"
+                        id="emailInput"
+                    />
                     <input
                         type="text"
                         class="form-control"
-                        placeholder="Ingresar email"
-                        aria-describedby="button-addon2"
-                        id="emailInput"
+                        placeholder="Ingresar nombre"
+                        id="nameInput"
                     />
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Ingresar apellido"
+                        id="lastnameInput"
+                    />
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Ingresar edad"
+                        id="ageInput"
+                    />
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Ingresar alias"
+                        id="aliasInput"
+                    />
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Ingresar URL de avatar"
+                        id="avatarInput"
+                    />
+
                     <div class="input-group-append">
                         <button
                             class="btn btn-outline-secondary"
                             type="button"
-                            id="emailBtn"
+                            id="loginBtn"
                             disabled
                         >
                             Ingresar

@@ -1,4 +1,5 @@
 const socket = io();
+const schema = normalizr.schema;
 
 //----------------products----------------
 
@@ -32,9 +33,27 @@ socket.on("newProduct", (data) => {
 
 //----------------chat----------------
 
+const authorSchema = new schema.Entity("author");
+const messageSchema = new schema.Entity(
+    "messages",
+    {
+        author: authorSchema,
+    },
+    { idAttribute: "time" }
+);
+
+const fileSchema = new schema.Entity("file", {
+    messages: [messageSchema],
+});
+
 const loginInputGroup = document.getElementById("loginInputGroup");
-const emailBtn = document.getElementById("emailBtn");
+const loginBtn = document.getElementById("loginBtn");
 const emailInput = document.getElementById("emailInput");
+const nameInput = document.getElementById("nameInput");
+const lastnameInput = document.getElementById("lastnameInput");
+const ageInput = document.getElementById("ageInput");
+const aliasInput = document.getElementById("aliasInput");
+const avatarInput = document.getElementById("avatarInput");
 
 const chatInputGroup = document.getElementById("chatInputGroup");
 const chatBtn = document.getElementById("chatBtn");
@@ -44,11 +63,20 @@ const messages = document.querySelector("#messages");
 
 const notifications = document.getElementById("notifications");
 
-let email;
+const compression = document.getElementById("compression");
 
-emailBtn.addEventListener("click", (e) => {
-    email = emailInput.value;
-    socket.emit("login", email);
+let user;
+
+loginBtn.addEventListener("click", (e) => {
+    user = {
+        id: emailInput.value,
+        name: nameInput.value,
+        lastname: lastnameInput.value,
+        age: ageInput.value,
+        alias: aliasInput.value,
+        avatar: avatarInput.value,
+    };
+    socket.emit("login", user);
 });
 
 socket.on("success", (data) => {
@@ -56,21 +84,34 @@ socket.on("success", (data) => {
     chatInputGroup.style.display = "flex";
     messages.style.display = "block";
 
-    data.forEach((el) => {
+    const denormalizedData = normalizr.denormalize(
+        data.result,
+        fileSchema,
+        data.entities
+    );
+
+    const percentageSaved = `Compresión: ${
+        (JSON.stringify(data).length /
+            JSON.stringify(denormalizedData).length) *
+        100
+    }%`;
+    compression.innerHTML = percentageSaved;
+
+    denormalizedData.messages.forEach((el) => {
         messages.innerHTML += `
-        <span style="color:blue;font-weight:bold">${el.email}</span> 
+        <span style="color:blue;font-weight:bold">${el.author.alias}</span> 
         <span style="color:brown;font-size:12px">[${el.time}]</span>: 
-        <span style="color:green;font-style:italic">${el.message}</span>
+        <span style="color:green;font-style:italic">${el.text}</span>
         <br>`;
     });
 });
 
 socket.on("newMessage", (data) => {
-    if (email) {
+    if (user) {
         const message = `
-        <span style="color:blue;font-weight:bold">${data.email}</span> 
+        <span style="color:blue;font-weight:bold">${data.author.alias}</span> 
         <span style="color:brown;font-size:12px">[${data.time}]</span>: 
-        <span style="color:green;font-style:italic">${data.message}</span>
+        <span style="color:green;font-style:italic">${data.text}</span>
         <br>`;
         messages.innerHTML += message;
     }
@@ -80,14 +121,14 @@ const enableBtn = (e, btn) => {
     e.target.value === "" ? (btn.disabled = true) : (btn.disabled = false);
 };
 
-emailInput.addEventListener("input", (e) => enableBtn(e, emailBtn));
+emailInput.addEventListener("input", (e) => enableBtn(e, loginBtn));
 chatInput.addEventListener("input", (e) => enableBtn(e, chatBtn));
 
 chatBtn.addEventListener("click", (e) => {
     const message = chatInput.value;
     chatInput.value = "";
     chatBtn.disabled = true;
-    socket.emit("addMessage", { message, email });
+    socket.emit("addMessage", { message, user });
 });
 
 //fetch initial products

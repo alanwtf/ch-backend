@@ -2,9 +2,10 @@ const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const { engine } = require("express-handlebars");
-const formatDate = require("./helpers/dateFormatter");
-const Storage = require("./helpers/Storage");
+const formatDate = require("./utils/dateFormatter");
+const Storage = require("./storage/Storage");
 const { faker } = require("@faker-js/faker");
+const normalizeMessages = require("./utils/normalizeMessages");
 const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
@@ -72,22 +73,24 @@ io.on("connection", (socket) => {
     });
 
     //chat
-    socket.on("login", async (email) => {
+    socket.on("login", async (user) => {
         users.push({
-            email,
+            user,
             id: socket.id,
         });
         const messages = await Store.getAll();
-        socket.emit("success", messages);
+        normalizeMessages(messages);
+        socket.emit("success", normalizeMessages(messages));
     });
 
     socket.on("addMessage", async (data) => {
         const now = new Date();
         const newMessage = {
-            message: data.message,
-            email: data.email,
+            text: data.message,
+            author: data.user,
             time: formatDate(now),
         };
+        console.log(newMessage);
 
         await Store.saveMessage(newMessage);
         io.emit("newMessage", newMessage);
