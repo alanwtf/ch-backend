@@ -2,35 +2,49 @@ const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const { engine } = require("express-handlebars");
-const formatDate = require("./utils/dateFormatter");
+const passport = require("passport");
+const flash = require("express-flash");
+const session = require("express-session");
+const dotenv = require("dotenv");
+
 const Storage = require("./storage/Storage");
+
+const connectDB = require("./config/db");
+const initializePassport = require("./config/passport");
+
+const createRandomProducts = require("./utils/createRandomProducts");
+const formatDate = require("./utils/dateFormatter");
+const normalizeMessages = require("./utils/normalizeMessages");
 const replace = require("./utils/replaceUsernameOnIndex");
 
-const normalizeMessages = require("./utils/normalizeMessages");
 const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
-const createRandomProducts = require("./utils/createRandomProducts");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
+
+const { isAuthenticated, isNotAuthenticated } = require("./middlewares/auth");
+
+dotenv.config();
+connectDB(process.env.MONGODB_URI);
+initializePassport(passport);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(
     session({
-        store: MongoStore.create({
-            mongoUrl:
-                "mongodb+srv://admin:LseuC262dwrqPkY@cluster0.oijib.mongodb.net/?retryWrites=true&w=majority",
-            mongoOptions: { useNewUrlparser: true, useUnifiedTopology: true },
-            ttl: 600,
-        }),
-        secret: "123456789",
-        resave: false,
+        secret: "assa",
+        resave: true,
         saveUninitialized: true,
+        rolling: true,
+        cookie: {
+            maxAge: 1000 * 60 * 10,
+        },
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.engine(
     "hbs",
@@ -51,45 +65,62 @@ app.set("view engine", "hbs");
 
 const products = [];
 const users = [];
-const messages = [];
 
-app.get("/products", (req, res) => {
+app.get("/products", (_req, res) => {
     return res.send(products);
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", isNotAuthenticated, (_req, res) => {
     res.render("partials/login");
 });
 
-app.get("/api/productos-test", (req, res) => {
+app.post(
+    "/login",
+    passport.authenticate("login", {
+        successRedirect: "/index",
+        failureRedirect: "/login",
+        failureFlash: true,
+    })
+);
+
+app.get("/register", isNotAuthenticated, (_req, res) => {
+    return res.render("partials/register");
+});
+
+app.post(
+    "/register",
+    passport.authenticate("register", {
+        successRedirect: "/index",
+        failureRedirect: "/register",
+        failureFlash: true,
+    })
+);
+
+app.get("/api/productos-test", (_req, res) => {
     const randomProducts = createRandomProducts(5);
     return res.render("partials/products-table", {
         productos: randomProducts,
     });
 });
 
-app.post("/login", (req, res) => {
-    req.session.username = req.body.username;
-    res.redirect("/index");
-});
-
-app.get("/index", async (req, res) => {
-    if (req.session.username) {
-        const parsedData = await replace(req.session.username);
-        res.send(parsedData);
-    } else {
-        res.redirect("/logout");
+app.get("/index", isAuthenticated, async (req, res) => {
+    if (req.user?.email) {
+        console.log(req.session.cookie.maxAge);
+        const parsedData = await replace(req.user.email);
+        return res.send(parsedData);
     }
+
+    return res.redirect("/logout");
 });
 
-app.get("/logout", (req, res) => {
-    const username = req.session.username;
-    return req.session.destroy((err) => {
-        if (!err) {
-            return res.render("partials/logout", { username });
+app.get("/logout", isAuthenticated, (req, res, next) => {
+    console.log(req.user);
+    const email = req.user.email;
+    req.logOut((err) => {
+        if (err) {
+            return next(err);
         }
-
-        return res.json({ error: err });
+        return res.render("partials/logout", { email });
     });
 });
 
