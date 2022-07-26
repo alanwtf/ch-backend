@@ -80,7 +80,6 @@ loginBtn.addEventListener("click", (e) => {
 });
 
 logoutBtn.addEventListener("click", (e) => {
-    console.log("logout");
     window.location = "/logout";
 });
 

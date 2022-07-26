@@ -7,64 +7,55 @@ initialize = (passport) => {
         "login",
         new LocalStrategy(
             { usernameField: "email" },
-            (email, password, done) => {
-                console.log(email);
-                User.findOne({ email }, (err, user) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    if (!user) {
-                        return done(null, false, { message: "User not found" });
-                    }
-                    if (!verifyPassword(password, user)) {
+
+            async (email, password, done) => {
+                try {
+                    const user = await User.findOne({ email });
+                    if (!user)
                         return done(null, false, {
-                            message: "Password incorrect",
+                            message: "Usuario no encontrado",
                         });
-                    }
+
+                    if (!verifyPassword(password, user))
+                        return done(null, false, {
+                            message: "Password incorrecto",
+                        });
+
                     return done(null, user);
-                });
+                } catch (err) {
+                    return done(err);
+                }
             }
         )
     );
 
     passport.use(
         "register",
-        new LocalStrategy(
-            {
-                usernameField: "email",
-            },
-            (email, password, done) => {
-                console.log(email, password);
-                return User.findOne({ email })
-                    .then((user) => {
-                        if (user) {
-                            return done(null, false, {
-                                message: "El nombre de usuario ya esta en uso.",
-                            });
-                        }
+        new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
+            try {
+                const user = await User.findOne({ email });
+                if (user)
+                    return done(null, false, {
+                        message: "El nombre de usuario ya esta en uso.",
+                    });
 
-                        const newUser = new User({
-                            email,
-                            password: createHash(password),
-                        });
-                        // newUser.password = createHash(password);
-                        // newUser.email = email;
-                        return newUser.save();
-                    })
-                    .then((user) => {
-                        return done(null, user);
-                    })
-                    .catch((err) => console.log(err));
+                const newUser = new User({
+                    email,
+                    password: createHash(password),
+                });
+                await newUser.save();
+                return done(null, newUser);
+            } catch (err) {
+                return done(err);
             }
-        )
+        })
     );
+
     passport.serializeUser((user, done) => done(null, user._id));
 
-    passport.deserializeUser((id, done) => {
-        console.log("deserializeUser");
-        User.findById(id).then((user) => {
-            done(null, user);
-        });
+    passport.deserializeUser(async (id, done) => {
+        const user = await User.findById(id);
+        done(null, user);
     });
 };
 

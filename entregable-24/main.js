@@ -28,10 +28,10 @@ connectDB(process.env.MONGODB_URI);
 initializePassport(passport);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
-        secret: "assa",
+        secret: process.env.SESSION_SECRET,
         resave: true,
         saveUninitialized: true,
         rolling: true,
@@ -43,6 +43,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(express.static("./public"));
 
 const PORT = process.env.PORT || 8080;
 
@@ -55,8 +56,6 @@ app.engine(
         partialsDir: `${__dirname}/views/partials`,
     })
 );
-
-app.use(express.static("./public"));
 
 const Store = new Storage();
 
@@ -104,17 +103,11 @@ app.get("/api/productos-test", (_req, res) => {
 });
 
 app.get("/index", isAuthenticated, async (req, res) => {
-    if (req.user?.email) {
-        console.log(req.session.cookie.maxAge);
-        const parsedData = await replace(req.user.email);
-        return res.send(parsedData);
-    }
-
-    return res.redirect("/logout");
+    const parsedData = await replace(req.user.email);
+    return res.send(parsedData);
 });
 
 app.get("/logout", isAuthenticated, (req, res, next) => {
-    console.log(req.user);
     const email = req.user.email;
     req.logOut((err) => {
         if (err) {
@@ -160,6 +153,4 @@ io.on("connection", (socket) => {
     });
 });
 
-httpServer.listen(PORT, () =>
-    console.log(`Servidor escuchando en puerto ${PORT}`)
-);
+httpServer.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
