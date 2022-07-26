@@ -76,7 +76,7 @@ app.get("/login", isNotAuthenticated, (_req, res) => {
 app.post(
     "/login",
     passport.authenticate("login", {
-        successRedirect: "/index",
+        successRedirect: "/",
         failureRedirect: "/login",
         failureFlash: true,
     })
@@ -89,7 +89,7 @@ app.get("/register", isNotAuthenticated, (_req, res) => {
 app.post(
     "/register",
     passport.authenticate("register", {
-        successRedirect: "/index",
+        successRedirect: "/",
         failureRedirect: "/register",
         failureFlash: true,
     })
@@ -102,7 +102,7 @@ app.get("/api/productos-test", (_req, res) => {
     });
 });
 
-app.get("/index", isAuthenticated, async (req, res) => {
+app.get("/", isAuthenticated, async (req, res) => {
     const parsedData = await replace(req.user.email);
     return res.send(parsedData);
 });
