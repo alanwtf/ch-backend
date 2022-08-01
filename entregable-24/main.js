@@ -2,26 +2,37 @@ const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const { engine } = require("express-handlebars");
+
 const passport = require("passport");
-const flash = require("express-flash");
 const session = require("express-session");
+const flash = require("express-flash");
+const initializePassport = require("./config/passport");
+const { isAuthenticated, isNotAuthenticated } = require("./middlewares/auth");
+
 const dotenv = require("dotenv");
 
 const Storage = require("./storage/Storage");
-
 const connectDB = require("./config/db");
-const initializePassport = require("./config/passport");
 
 const createRandomProducts = require("./utils/createRandomProducts");
 const formatDate = require("./utils/dateFormatter");
 const normalizeMessages = require("./utils/normalizeMessages");
 const replace = require("./utils/replaceUsernameOnIndex");
+const yargs = require("yargs");
+
+const randomRouter = require("./routes/randomRouter");
 
 const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
-const { isAuthenticated, isNotAuthenticated } = require("./middlewares/auth");
+const args = yargs(process.argv.slice(2))
+    .default({
+        port: 8080,
+    })
+    .alias({
+        port: "p",
+    }).argv;
 
 dotenv.config();
 connectDB(process.env.MONGODB_URI);
@@ -44,8 +55,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.static("./public"));
+app.use("/api", randomRouter);
 
-const PORT = process.env.PORT || 8080;
+const PORT = args.port || 8080;
 
 app.engine(
     "hbs",
@@ -65,12 +77,25 @@ app.set("view engine", "hbs");
 const products = [];
 const users = [];
 
+app.get("/info", (_req, res) => {
+    const data = {
+        args: JSON.stringify(args, null, 2),
+        os: process.platform,
+        nodeVersion: process.version,
+        path: process.execPath,
+        processId: process.pid,
+        folderPath: process.cwd(),
+        maxRSS: process.resourceUsage().maxRSS + " bytes",
+    };
+    return res.render("partials/info", { data: data });
+});
+
 app.get("/products", (_req, res) => {
     return res.send(products);
 });
 
 app.get("/login", isNotAuthenticated, (_req, res) => {
-    res.render("partials/login");
+    return res.render("partials/login");
 });
 
 app.post(
@@ -95,7 +120,7 @@ app.post(
     })
 );
 
-app.get("/api/productos-test", (_req, res) => {
+app.get("/productos-test", (_req, res) => {
     const randomProducts = createRandomProducts(5);
     return res.render("partials/products-table", {
         productos: randomProducts,
