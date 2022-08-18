@@ -10,10 +10,10 @@ const initializePassport = require("./config/passport");
 const { isAuthenticated, isNotAuthenticated } = require("./middlewares/auth");
 const numCPUs = require("os").cpus().length;
 const dotenv = require("dotenv");
-
+const compression = require("compression");
 const Storage = require("./storage/Storage");
 const connectDB = require("./config/db");
-
+const logger = require("./utils/logger");
 const createRandomProducts = require("./utils/createRandomProducts");
 const formatDate = require("./utils/dateFormatter");
 const normalizeMessages = require("./utils/normalizeMessages");
@@ -48,7 +48,13 @@ const server = (args) => {
     app.use(passport.session());
     app.use(flash());
     app.use(express.static("./public"));
+
+    app.use(compression());
     app.use("/api", randomRouter);
+    app.use((req, res, next) => {
+        logger.info(`Ruta: ${req.path} Metodo: ${req.method}`);
+        return next();
+    });
 
     const PORT = args.port || 8080;
 
@@ -81,6 +87,7 @@ const server = (args) => {
             maxRSS: process.resourceUsage().maxRSS + " bytes",
             numCPUs,
         };
+
         return res.render("partials/info", { data: data });
     });
 
@@ -136,6 +143,11 @@ const server = (args) => {
         });
     });
 
+    app.get("*", (req, res) => {
+        logger.warn(`Ruta: ${req.path} Metodo: ${req.method}`);
+        return res.status(404).json({ message: "page not found" });
+    });
+
     io.on("connection", (socket) => {
         console.log(`nuevo usuario id: ${socket.id}`);
 
@@ -166,8 +178,11 @@ const server = (args) => {
                 time: formatDate(now),
             };
             console.log(newMessage);
-
-            await Store.saveMessage(newMessage);
+            try {
+                await Store.saveMessage(newMessage);
+            } catch (err) {
+                logger.error(err.message);
+            }
             io.emit("newMessage", newMessage);
         });
     });
