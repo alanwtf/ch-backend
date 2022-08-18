@@ -4,8 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "devStart": "nodemon main.js --ignore messages.json"
+        "test": "node main.js",
+        "devStart": "nodemon main.js --ignore messages.json",
+        "start": "0x main.js"
     },
     "keywords": [],
     "author": "",

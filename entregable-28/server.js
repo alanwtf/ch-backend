@@ -88,6 +88,8 @@ const server = (args) => {
             numCPUs,
         };
 
+        console.log(data);
+
         return res.render("partials/info", { data: data });
     });
 
