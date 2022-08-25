@@ -6,7 +6,7 @@
     "scripts": {
         "test": "node main.js",
         "devStart": "nodemon main.js --ignore messages.json",
-        "start": "main.js"
+        "start": "node main.js"
     },
     "keywords": [],
     "author": "",
