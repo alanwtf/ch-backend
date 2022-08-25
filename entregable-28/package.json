@@ -2,9 +2,9 @@
     "name": "entregable-12",
     "version": "1.0.0",
     "description": "",
-    "main": "server.js",
+    "main": "main.js",
     "scripts": {
-        "start": "node server.js",
+        "start": "node main.js",
         "test": "node main.js",
         "devStart": "nodemon main.js --ignore messages.json"
     },
