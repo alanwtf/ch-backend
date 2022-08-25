@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "start": "node main.js",
         "test": "node main.js",
-        "devStart": "nodemon main.js --ignore messages.json",
-        "start": "node main.js"
+        "devStart": "nodemon main.js --ignore messages.json"
     },
     "keywords": [],
     "author": "",
