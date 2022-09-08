@@ -6,14 +6,15 @@ const productsDaoMongoDB = require("./products/ProductsDaoMongoDB");
 const cartDaoMongoDB = require("./carts/CartDaoMongoDB");
 const productsDaoFirebase = require("./products/ProductsDaoFirebase");
 const cartDaoFirebase = require("./carts/CartDaoFirebase");
+const userDaoMongoDB = require("./users/UserDaoMongoDB");
 
 const getStorage = () => {
-    const storage = process.env.STORAGE;
+    const storage = process.env.STORAGE ?? "mongodb";
     switch (storage) {
         case "archivo":
             return {
                 products: new productsDaoFiles("products.json"),
-                carts: new cartDaoFiles("cats.json"),
+                carts: new cartDaoFiles("carts.json"),
             };
         case "memoria":
             return {
@@ -24,6 +25,7 @@ const getStorage = () => {
             return {
                 products: new productsDaoMongoDB(),
                 carts: new cartDaoMongoDB(),
+                users: new userDaoMongoDB(),
             };
         case "firebase":
             return {

@@ -1,8 +1,8 @@
 const express = require("express");
 const { Router } = express;
 const productsRouter = Router();
-const isAdmin = require("../middlewares/isAdminMiddleware");
 const { products } = require("../daos")();
+const { isAuthenticated, isNotAuthenticated, isAdmin } = require("../middlewares/auth");
 
 productsRouter.get("/:id?", async (req, res) => {
     if (req.params.id) {

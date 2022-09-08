@@ -1,10 +1,19 @@
 const MongoContainer = require("../../containers/MongoContainer");
-const Cart = require("../../models/cart");
+const Cart = require("../../models/Cart");
 
 class CartDaoMongoDB extends MongoContainer {
     constructor() {
         super(Cart);
     }
+
+    createCart = async (userId) => {
+        try {
+            const newCart = await this.createItem({ user_id: userId });
+            return newCart;
+        } catch (err) {
+            logger.error(err);
+        }
+    };
 
     deleteCartProduct = async (id, prodId) => {
         let cart;
@@ -13,27 +22,31 @@ class CartDaoMongoDB extends MongoContainer {
             cart.products.id(prodId).remove();
             await cart.save();
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 
-    getCartProducts = async (id) => {
+    getCartByUserId = async (id) => {
         let cart;
         try {
-            cart = await this.getItemById(id);
+            cart = await this.model.findOne({ user_id: id });
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
-        return cart.products;
+        return cart ? cart : undefined;
     };
 
-    addCartProduct = async (id, prod) => {
+    addCartProduct = async (id, product) => {
         try {
-            let cart = await this.getItemById(id);
-            cart.products.push(prod);
+            console.log(id);
+            let cart = await this.getItemById({ _id: id });
+            console.log(cart);
+            if (!cart.products) cart.products = [];
+
+            cart.products.push(product);
             await cart.save();
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 }

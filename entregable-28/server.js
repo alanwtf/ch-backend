@@ -24,187 +24,172 @@ const randomRouter = require("./routes/randomRouter");
 
 const server = (args) => {
     const app = express();
-    //const httpServer = new HttpServer(app);
-    //const io = new IOServer(httpServer);
+    const httpServer = new HttpServer(app);
+    const io = new IOServer(httpServer);
 
-    //dotenv.config();
-    //connectDB(process.env.MONGODB_URI);
-    //initializePassport(passport);
+    dotenv.config();
+    connectDB(process.env.MONGODB_URI);
+    initializePassport(passport);
 
-    let port = process.env.PORT;
-    if (port == null || port == "") {
-        port = 3000;
-    }
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(
+        session({
+            secret: process.env.SESSION_SECRET,
+            resave: true,
+            saveUninitialized: true,
+            rolling: true,
+            cookie: {
+                maxAge: 1000 * 60 * 10,
+            },
+        })
+    );
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(flash());
+    app.use(express.static("./public"));
 
-    app.listen(port, function () {
-        console.log("Server started succesfully on port " + port);
+    app.use(compression());
+    app.use("/api", randomRouter);
+    app.use((req, res, next) => {
+        logger.info(`Ruta: ${req.path} Metodo: ${req.method}`);
+        return next();
     });
 
-    app.get("/", (req, res) => {
-        return res.send("hola");
+    const PORT = process.env.PORT || 8080;
+
+    app.engine(
+        "hbs",
+        engine({
+            extname: ".hbs",
+            defaultLayout: `${__dirname}/views/index.hbs`,
+            layoutsDir: `${__dirname}/views/layouts`,
+            partialsDir: `${__dirname}/views/partials`,
+        })
+    );
+
+    const Store = new Storage();
+
+    app.set("views", "./views");
+    app.set("view engine", "hbs");
+
+    const products = [];
+    const users = [];
+
+    app.get("/info", (_req, res) => {
+        const data = {
+            args: JSON.stringify(args, null, 2),
+            os: process.platform,
+            nodeVersion: process.version,
+            path: process.execPath,
+            processId: process.pid,
+            folderPath: process.cwd(),
+            maxRSS: process.resourceUsage().maxRSS + " bytes",
+            numCPUs,
+        };
+
+        console.log(data);
+
+        return res.render("partials/info", { data: data });
     });
 
-    //     app.use(express.json());
-    //     app.use(express.urlencoded({ extended: true }));
-    //     app.use(
-    //         session({
-    //             secret: process.env.SESSION_SECRET,
-    //             resave: true,
-    //             saveUninitialized: true,
-    //             rolling: true,
-    //             cookie: {
-    //                 maxAge: 1000 * 60 * 10,
-    //             },
-    //         })
-    //     );
-    //     app.use(passport.initialize());
-    //     app.use(passport.session());
-    //     app.use(flash());
-    //     app.use(express.static("./public"));
+    app.get("/products", (_req, res) => {
+        return res.send(products);
+    });
 
-    //     app.use(compression());
-    //     app.use("/api", randomRouter);
-    //     app.use((req, res, next) => {
-    //         logger.info(`Ruta: ${req.path} Metodo: ${req.method}`);
-    //         return next();
-    //     });
+    app.get("/login", isNotAuthenticated, (_req, res) => {
+        return res.render("partials/login");
+    });
 
-    //     const PORT = args.port || 8080;
+    app.post(
+        "/login",
+        passport.authenticate("login", {
+            successRedirect: "/",
+            failureRedirect: "/login",
+            failureFlash: true,
+        })
+    );
 
-    //     app.engine(
-    //         "hbs",
-    //         engine({
-    //             extname: ".hbs",
-    //             defaultLayout: `${__dirname}/views/index.hbs`,
-    //             layoutsDir: `${__dirname}/views/layouts`,
-    //             partialsDir: `${__dirname}/views/partials`,
-    //         })
-    //     );
+    app.get("/register", isNotAuthenticated, (_req, res) => {
+        return res.render("partials/register");
+    });
 
-    //     const Store = new Storage();
+    app.post(
+        "/register",
+        passport.authenticate("register", {
+            successRedirect: "/",
+            failureRedirect: "/register",
+            failureFlash: true,
+        })
+    );
 
-    //     app.set("views", "./views");
-    //     app.set("view engine", "hbs");
+    app.get("/productos-test", (_req, res) => {
+        const randomProducts = createRandomProducts(5);
+        return res.render("partials/products-table", {
+            productos: randomProducts,
+        });
+    });
 
-    //     const products = [];
-    //     const users = [];
+    app.get("/", isAuthenticated, async (req, res) => {
+        const parsedData = await replace(req.user.email);
+        return res.send(parsedData);
+    });
 
-    //     app.get("/info", (_req, res) => {
-    //         const data = {
-    //             args: JSON.stringify(args, null, 2),
-    //             os: process.platform,
-    //             nodeVersion: process.version,
-    //             path: process.execPath,
-    //             processId: process.pid,
-    //             folderPath: process.cwd(),
-    //             maxRSS: process.resourceUsage().maxRSS + " bytes",
-    //             numCPUs,
-    //         };
+    app.get("/logout", isAuthenticated, (req, res, next) => {
+        const email = req.user.email;
+        req.logOut((err) => {
+            if (err) {
+                return next(err);
+            }
+            return res.render("partials/logout", { email });
+        });
+    });
 
-    //         console.log(data);
+    app.get("*", (req, res) => {
+        logger.warn(`Ruta: ${req.path} Metodo: ${req.method}`);
+        return res.status(404).json({ message: "page not found" });
+    });
 
-    //         return res.render("partials/info", { data: data });
-    //     });
+    io.on("connection", (socket) => {
+        console.log(`nuevo usuario id: ${socket.id}`);
 
-    //     app.get("/products", (_req, res) => {
-    //         return res.send(products);
-    //     });
+        //productos
 
-    //     app.get("/login", isNotAuthenticated, (_req, res) => {
-    //         return res.render("partials/login");
-    //     });
+        socket.on("addProduct", (data) => {
+            const newProduct = { ...data, id: products.length + 1 };
+            products.push(newProduct);
+            io.emit("newProduct", newProduct);
+        });
 
-    //     app.post(
-    //         "/login",
-    //         passport.authenticate("login", {
-    //             successRedirect: "/",
-    //             failureRedirect: "/login",
-    //             failureFlash: true,
-    //         })
-    //     );
+        //chat
+        socket.on("login", async (user) => {
+            users.push({
+                user,
+                id: socket.id,
+            });
+            const messages = await Store.getAll();
+            normalizeMessages(messages);
+            socket.emit("success", normalizeMessages(messages));
+        });
 
-    //     app.get("/register", isNotAuthenticated, (_req, res) => {
-    //         return res.render("partials/register");
-    //     });
+        socket.on("addMessage", async (data) => {
+            const now = new Date();
+            const newMessage = {
+                text: data.message,
+                author: data.user,
+                time: formatDate(now),
+            };
+            console.log(newMessage);
+            try {
+                await Store.saveMessage(newMessage);
+            } catch (err) {
+                logger.error(err.message);
+            }
+            io.emit("newMessage", newMessage);
+        });
+    });
 
-    //     app.post(
-    //         "/register",
-    //         passport.authenticate("register", {
-    //             successRedirect: "/",
-    //             failureRedirect: "/register",
-    //             failureFlash: true,
-    //         })
-    //     );
-
-    //     app.get("/productos-test", (_req, res) => {
-    //         const randomProducts = createRandomProducts(5);
-    //         return res.render("partials/products-table", {
-    //             productos: randomProducts,
-    //         });
-    //     });
-
-    //     app.get("/", isAuthenticated, async (req, res) => {
-    //         const parsedData = await replace(req.user.email);
-    //         return res.send(parsedData);
-    //     });
-
-    //     app.get("/logout", isAuthenticated, (req, res, next) => {
-    //         const email = req.user.email;
-    //         req.logOut((err) => {
-    //             if (err) {
-    //                 return next(err);
-    //             }
-    //             return res.render("partials/logout", { email });
-    //         });
-    //     });
-
-    //     app.get("*", (req, res) => {
-    //         logger.warn(`Ruta: ${req.path} Metodo: ${req.method}`);
-    //         return res.status(404).json({ message: "page not found" });
-    //     });
-
-    //     io.on("connection", (socket) => {
-    //         console.log(`nuevo usuario id: ${socket.id}`);
-
-    //         //productos
-
-    //         socket.on("addProduct", (data) => {
-    //             const newProduct = { ...data, id: products.length + 1 };
-    //             products.push(newProduct);
-    //             io.emit("newProduct", newProduct);
-    //         });
-
-    //         //chat
-    //         socket.on("login", async (user) => {
-    //             users.push({
-    //                 user,
-    //                 id: socket.id,
-    //             });
-    //             const messages = await Store.getAll();
-    //             normalizeMessages(messages);
-    //             socket.emit("success", normalizeMessages(messages));
-    //         });
-
-    //         socket.on("addMessage", async (data) => {
-    //             const now = new Date();
-    //             const newMessage = {
-    //                 text: data.message,
-    //                 author: data.user,
-    //                 time: formatDate(now),
-    //             };
-    //             console.log(newMessage);
-    //             try {
-    //                 await Store.saveMessage(newMessage);
-    //             } catch (err) {
-    //                 logger.error(err.message);
-    //             }
-    //             io.emit("newMessage", newMessage);
-    //         });
-    //     });
-
-    //     httpServer.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
-    //
+    httpServer.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
 };
 
-//
 module.exports = server;

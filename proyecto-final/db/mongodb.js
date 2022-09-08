@@ -1,17 +1,13 @@
 const mongoose = require("mongoose");
+const logger = require("../config/winston");
 
-const URL = "mongodb://127.0.0.1:27017/ecommerce";
-
-module.exports = {
-    connection: null,
-    connect: () => {
-        if (this.connection) return this.connection;
-        return mongoose
-            .connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
-            .then((connection) => {
-                this.connection = connection;
-                console.log("Conexion a DB exitosa");
-            })
-            .catch((err) => console.log(err));
-    },
+const connectDB = async (URL) => {
+    try {
+        await mongoose.connect(URL);
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        logger.error(err);
+    }
 };
+
+module.exports = connectDB;

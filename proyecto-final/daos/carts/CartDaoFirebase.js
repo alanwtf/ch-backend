@@ -1,3 +1,4 @@
+const logger = require("../../config/winston");
 const FirebaseContainer = require("../../containers/FirebaseContainer");
 const db = require("../../firebase/db");
 
@@ -11,12 +12,10 @@ class CartDaoFirebase extends FirebaseContainer {
     deleteCartProduct = async (id, prodId) => {
         try {
             const cart = await this.getItemById(id);
-            const newProdsCart = cart.products.filter(
-                (prod) => prod.id !== prodId
-            );
+            const newProdsCart = cart.products.filter((prod) => prod.id !== prodId);
             await this.updateItem(cart.id, { products: newProdsCart });
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 
@@ -25,7 +24,7 @@ class CartDaoFirebase extends FirebaseContainer {
         try {
             cart = await this.getItemById(id);
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
         return cart.products;
     };
@@ -38,7 +37,7 @@ class CartDaoFirebase extends FirebaseContainer {
             cart.products.push(prod);
             await this.updateItem(cart.id, cart);
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 }

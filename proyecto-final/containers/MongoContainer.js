@@ -1,3 +1,5 @@
+const logger = require("../config/winston");
+
 class MongoContainer {
     constructor(model) {
         this.model = model;
@@ -9,27 +11,29 @@ class MongoContainer {
             //console.log(model);
             arr = await this.model.find({});
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
         return arr;
     };
 
     getItemById = async (id) => {
-        let product = {};
+        let item = {};
         try {
-            product = this.model.findById(id);
+            item = this.model.findById(id);
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
-        return product;
+        return item;
     };
 
     createItem = async (item) => {
         let newItem = new this.model(item);
+
         try {
             await newItem.save();
+            return newItem;
         } catch (err) {
-            console.log(err);
+            throw Error(err);
         }
     };
 
@@ -39,7 +43,7 @@ class MongoContainer {
             Object.assign(product, newItem);
             await product.save();
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 
@@ -47,7 +51,7 @@ class MongoContainer {
         try {
             await this.model.deleteOne({ _id: id });
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 }

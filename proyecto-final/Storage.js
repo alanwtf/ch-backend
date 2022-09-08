@@ -8,10 +8,7 @@ class Storage {
 
     saveFile = async (newArr, filePath) => {
         try {
-            await fs.promises.writeFile(
-                filePath,
-                JSON.stringify(newArr, null, 2)
-            );
+            await fs.promises.writeFile(filePath, JSON.stringify(newArr, null, 2));
         } catch (err) {
             throw new Error(err);
         }
@@ -41,8 +38,7 @@ class Storage {
 
     createProduct = async (product) => {
         const productArr = await this.getFile(this.productsFilename);
-        const lastId =
-            productArr.length > 0 ? productArr[productArr.length - 1].id : 0;
+        const lastId = productArr.length > 0 ? productArr[productArr.length - 1].id : 0;
         product.id = lastId + 1;
         product.created_at = Date.now();
         productArr.push(product);
@@ -66,9 +62,7 @@ class Storage {
 
     deleteProduct = async (id) => {
         const productArr = await this.getFile(this.productsFilename);
-        const newArr = productArr.filter(
-            (product) => product.id !== Number(id)
-        );
+        const newArr = productArr.filter((product) => product.id !== Number(id));
         this.saveFile(newArr, this.productsFilename);
         return;
     };
@@ -122,9 +116,7 @@ class Storage {
 
     deleteCartProduct = async (id, prodId) => {
         const cart = await this.getCartById(Number(id));
-        const newProductArr = cart.products.filter(
-            (prod) => prod.id !== Number(prodId)
-        );
+        const newProductArr = cart.products.filter((prod) => prod.id !== Number(prodId));
         cart.products = [...newProductArr];
         await this.updateCart(id, cart);
         return;
@@ -133,7 +125,7 @@ class Storage {
     addCartProduct = async (id, prodId) => {
         const cart = await this.getCartById(Number(id));
         const prod = await this.getProductById(Number(prodId));
-        console.log(prod);
+
         cart.products.push(prod);
         await this.updateCart(id, cart);
         return;
