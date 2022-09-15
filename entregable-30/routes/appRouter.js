@@ -6,7 +6,7 @@ const AppController = require("../controllers/AppController");
 const appService = new AppService();
 const appController = new AppController(appService);
 
-const appRouter = new Router();
+const appRouter = Router();
 
 appRouter.get("/info", appController.getInfo.bind(appController));
 
