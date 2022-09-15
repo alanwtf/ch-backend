@@ -7,8 +7,7 @@ class ProductController {
         this.service = service;
     }
 
-    async get(req, res) {
-        console.log(this);
+    async get(_req, res) {
         const datos = await this.service.getAll();
         console.log({ datos });
         return res.send(datos);

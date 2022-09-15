@@ -1,14 +1,13 @@
-//const ProductDAOMongo = require("../DAOs/user/ProductDAOMongo");
+const ProductDAOMongo = require("../DAOs/product/ProductDAOMongo");
 const ProductDAOMemory = require("../DAOs/product/ProductDAOMemory");
 
 const storageMapper = {
-    memory: () => new ProductDAOMemory(),
-    //mongo: () => new ProductDAOMongo(),
+    MEMORY: () => new ProductDAOMemory(),
+    MONGO: () => new ProductDAOMongo(),
 };
 
 module.exports = (storage) => {
-    //const storageDAOFn = storageMapper[storage] || storageMapper.memory;
-    const storageDAOFn = storageMapper.memory;
+    const storageDAOFn = storageMapper[storage] || storageMapper.memory;
     const dao = storageDAOFn();
     return dao;
 };
