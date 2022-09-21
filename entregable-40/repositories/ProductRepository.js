@@ -11,7 +11,7 @@ class ProductRepository {
     }
 
     async saveProduct(product) {
-        const prod = await this.dao.saveProduct(product);
+        const prod = await this.dao.create(product);
         console.log(this.dao);
         const productDTO = new ProductDTO(prod);
         return productDTO;
@@ -21,6 +21,22 @@ class ProductRepository {
         const prods = await this.dao.getAll();
         const productsDTO = prods.map((prod) => new ProductDTO(prod));
         return productsDTO;
+    }
+
+    async getOne(id) {
+        const prod = await this.dao.getOne(id);
+        const prodDTO = new ProductDTO(prod);
+        return prodDTO;
+    }
+
+    async updateProduct(id, newProd) {
+        const prod = await this.dao.update(id, newProd);
+        const prodDTO = new ProductDTO(prod);
+        return prodDTO;
+    }
+
+    async deleteProduct(id) {
+        return await this.dao.delete(id);
     }
 
     static getInstance() {

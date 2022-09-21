@@ -73,18 +73,6 @@
   },
   {
     "title": "1",
-    "price": "2",
-    "thumbnail": "3",
-    "id": 12
-  },
-  {
-    "title": "1",
-    "price": "1",
-    "thumbnail": "1",
-    "id": 13
-  },
-  {
-    "title": "1",
     "price": "1",
     "thumbnail": "1",
     "id": 14
@@ -135,12 +123,6 @@
     "title": "1",
     "price": "2",
     "thumbnail": "3",
-    "id": 22
-  },
-  {
-    "title": "1",
-    "price": "2",
-    "thumbnail": "3",
     "id": 23
   },
   {
@@ -166,5 +148,17 @@
     "price": "2",
     "thumbnail": "3",
     "id": 27
+  },
+  {
+    "title": "producto preba",
+    "price": 20,
+    "thumbnail": "url",
+    "id": 28
+  },
+  {
+    "title": "producto preba",
+    "price": 20,
+    "thumbnail": "url",
+    "id": 29
   }
 ]

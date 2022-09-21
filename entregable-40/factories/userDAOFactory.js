@@ -7,7 +7,9 @@ const storageMapper = {
 };
 
 module.exports = (storage) => {
-    const storageDAOFn = storageMapper[storage] || storageMapper.MONGO;
+    //const storageDAOFn = storageMapper[storage] || storageMapper.MONGO;
+
+    const storageDAOFn = storageMapper.MONGO;
     const dao = storageDAOFn();
     return dao;
 };

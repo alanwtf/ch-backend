@@ -12,11 +12,11 @@ const knex = require("knex")(sqliteConfig);
 //   .then(() => {
 
 knex.schema
-  .createTable("products", (table) => {
-    table.increments("id");
-    table.string("product", 60);
-    table.integer("price");
-    table.string("thumbnail", 60);
-  })
-  .catch((err) => console.log(err))
-  .finally(() => knex.destroy());
+    .createTable("products", (table) => {
+        table.increments("id");
+        table.string("product", 60);
+        table.integer("price");
+        table.string("thumbnail", 60);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => knex.destroy());
