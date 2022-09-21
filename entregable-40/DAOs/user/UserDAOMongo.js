@@ -5,7 +5,6 @@ class UserDAOMongo {
     constructor() {
         this.userModel = userModel;
     }
-
     async getById(_id) {
         return await this.userModel.findOne({ _id });
     }
