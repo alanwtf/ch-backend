@@ -12,7 +12,7 @@ class ProductRepository {
 
     async saveProduct(product) {
         const prod = await this.dao.create(product);
-        console.log(this.dao);
+
         const productDTO = new ProductDTO(prod);
         return productDTO;
     }
@@ -24,9 +24,9 @@ class ProductRepository {
     }
 
     async getOne(id) {
+        console.log(id);
         const prod = await this.dao.getOne(id);
-        const prodDTO = new ProductDTO(prod);
-        return prodDTO;
+        return prod ? new ProductDTO(prod) : undefined;
     }
 
     async updateProduct(id, newProd) {

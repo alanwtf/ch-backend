@@ -10,7 +10,7 @@ class ProductDAOMemory extends BaseDAOMemory {
 
     async create(product) {
         let file = await this.getAll();
-        product.id = file[file.length - 1].id + 1 ?? 1;
+        product.id = file[file.length - 1].id + 1 || 1;
         file.push(product);
         await this.saveFile(file);
         return product;
@@ -24,7 +24,7 @@ class ProductDAOMemory extends BaseDAOMemory {
     async getOne(id) {
         let products = await this.readFile();
         let product = products.find((prod) => prod.id === parseInt(id));
-        console.log(product);
+
         return product;
     }
 
@@ -32,23 +32,23 @@ class ProductDAOMemory extends BaseDAOMemory {
         let products = await this.readFile();
 
         let idx = products.findIndex((prod) => {
-            console.log(prod.id, parseInt(id));
             return prod.id === parseInt(id);
         });
-        console.log(idx);
+
         if (idx === -1) return false;
         products[idx] = { ...products[idx], ...newProduct };
-        console.log(newProduct);
+
         await this.saveFile(products);
         return products[idx];
     }
 
     async delete(id) {
-        let products = await this.readFile();
+        const products = await this.readFile();
+        console.log(id);
         const newArr = products.filter((prod) => prod.id !== parseInt(id));
-        if (newArr.length === products.length) return false;
+
         await this.saveFile(newArr);
-        return true;
+        return products.length === newArr.length ? false : true;
     }
 }
 

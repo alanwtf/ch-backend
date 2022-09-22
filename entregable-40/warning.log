@@ -55,3 +55,7 @@
 [2022-09-15T17:30:29.810] [WARN] custom - Ruta: /index Metodo: GET
 [2022-09-15T17:30:34.083] [WARN] custom - Ruta: /index Metodo: GET
 [2022-09-15T19:57:57.721] [WARN] custom - Ruta: /3 Metodo: GET
+[2022-09-21T14:33:04.177] [WARN] custom - Ruta: /apps/com.spotify.Spotify.TVv2 Metodo: GET
+[2022-09-21T14:54:20.546] [WARN] custom - Ruta: /api/courses Metodo: GET
+[2022-09-21T14:54:20.550] [WARN] custom - Ruta: /api/courses/deleted Metodo: GET
+[2022-09-21T15:01:04.053] [WARN] custom - Ruta: /apps/com.spotify.Spotify.TVv2 Metodo: GET
