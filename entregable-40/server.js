@@ -23,6 +23,7 @@ const randomRouter = require("./routes/randomRouter");
 const appRouter = require("./routes/appRouter");
 const authRouter = require("./routes/authRouter");
 const productRouter = require("./routes/productRouter");
+const graphQL = require("./graphQL/graphQL");
 
 const server = () => {
     const app = express();
@@ -34,7 +35,7 @@ const server = () => {
 
     const productService = new ProductService();
     const messageService = new MessageService();
-
+    app.use("/graphql", graphQL());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(

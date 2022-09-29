@@ -1,4 +1,5 @@
 const { schema, normalize } = require("normalizr");
+const { getCompletion } = require("yargs");
 const print = require("./print");
 
 function normalizeMessages(messages) {
