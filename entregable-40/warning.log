@@ -59,3 +59,4 @@
 [2022-09-21T14:54:20.546] [WARN] custom - Ruta: /api/courses Metodo: GET
 [2022-09-21T14:54:20.550] [WARN] custom - Ruta: /api/courses/deleted Metodo: GET
 [2022-09-21T15:01:04.053] [WARN] custom - Ruta: /apps/com.spotify.Spotify.TVv2 Metodo: GET
+[2022-09-28T22:57:52.453] [WARN] custom - Ruta: /favicon.ico Metodo: GET

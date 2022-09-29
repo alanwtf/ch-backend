@@ -24,8 +24,8 @@ class ProductRepository {
     }
 
     async getOne(id) {
-        console.log(id);
         const prod = await this.dao.getOne(id);
+
         return prod ? new ProductDTO(prod) : undefined;
     }
 

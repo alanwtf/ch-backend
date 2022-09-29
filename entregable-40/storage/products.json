@@ -18,9 +18,9 @@
     "id": 32
   },
   {
-    "title": "Creado en axios",
-    "price": 100,
-    "thumbnail": "una-url.com",
+    "title": "creado en graphql",
+    "price": 200,
+    "thumbnail": "www.com",
     "id": 36
   },
   {
@@ -39,19 +39,7 @@
     "title": "Creado en axios",
     "price": 100,
     "thumbnail": "una-url.com",
-    "id": 39
-  },
-  {
-    "title": "Creado en axios",
-    "price": 100,
-    "thumbnail": "una-url.com",
     "id": 44
-  },
-  {
-    "title": "Creado en axios",
-    "price": 100,
-    "thumbnail": "una-url.com",
-    "id": 53
   },
   {
     "title": "Creado en axios",
@@ -226,5 +214,11 @@
     "price": 100,
     "thumbnail": "una-url.com",
     "id": 82
+  },
+  {
+    "title": "creado en graphql",
+    "price": 200,
+    "thumbnail": "www.com",
+    "id": 83
   }
 ]
