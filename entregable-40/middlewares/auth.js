@@ -1,11 +1,11 @@
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-    return res.redirect("/auth/login");
+const isAuthenticated = (ctx, next) => {
+    if (ctx.isAuthenticated()) return next();
+    return ctx.redirect("/auth/login");
 };
 
-const isNotAuthenticated = (req, res, next) => {
-    if (!req.isAuthenticated()) return next();
-    return res.redirect("/index");
+const isNotAuthenticated = (ctx, next) => {
+    if (!ctx.isAuthenticated()) return next();
+    ctx.redirect("/index");
 };
 
 module.exports = { isAuthenticated, isNotAuthenticated };

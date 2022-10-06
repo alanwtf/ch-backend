@@ -11,9 +11,10 @@ class AppController {
         return res.render("partials/info", { data: data });
     }
 
-    async home(req, res) {
-        const parsedData = await replace(req.user.email);
-        return res.send(parsedData);
+    async home(ctx) {
+        console.log(ctx.state);
+        const parsedData = await replace(ctx.state.user.email);
+        ctx.body = parsedData;
     }
 
     async notFound(req, res) {
