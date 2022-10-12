@@ -7,14 +7,10 @@ const AppController = require("../controllers/AppController");
 const appService = new AppService();
 const appController = new AppController(appService);
 
-const appRouter = new Router({ prefix: "/home" });
+const appRouter = new Router({ prefix: "" });
 
 appRouter.get("/", isAuthenticated, appController.home);
 
-//appRouter.get("/info", appController.getInfo.bind(appController));
-
-//appRouter.get("/", isAuthenticated, appController.home);
-
-//appRouter.get("*", appController.notFound);
+appRouter.get("/info", appController.getInfo.bind(appController));
 
 module.exports = appRouter;

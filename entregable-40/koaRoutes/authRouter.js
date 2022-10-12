@@ -1,5 +1,5 @@
 const Router = require("koa-router");
-const passport = require("passport");
+const passport = require("koa-passport");
 
 const authRouter = new Router({ prefix: "/auth" });
 const { isAuthenticated, isNotAuthenticated } = require("../middlewares/auth");
@@ -13,66 +13,53 @@ const { isAuthenticated, isNotAuthenticated } = require("../middlewares/auth");
 //     })
 // );
 
-authRouter.post("/login", async (ctx, next) => {
-    await passport.authenticate("login", (err, user, info) => {
+authRouter.post("/login", async (ctx) => {
+    await passport.authenticate("login", async (err, user, info) => {
         if (err) {
-            return next(err);
+            ctx.body({ error: err });
         }
         if (!user) {
-            ctx.flash = {
-                type: "error",
-                message: info.message,
-            };
-            return ctx.redirect("/auth/login");
+            ctx.flash("error", info.message);
+            ctx.redirect("/auth/login");
+        } else {
+            ctx.login(user);
+            ctx.redirect("/");
         }
-        ctx.login(user, () => {
-            if (err) {
-                return next(err);
-            }
-
-            return ctx.redirect("/");
-        });
-    })(ctx, next);
+    })(ctx);
 });
 
 authRouter.get("/login", isNotAuthenticated, async (ctx) => {
-    await ctx.render("partials/login", { message: ctx.flash.message });
+    await ctx.render("partials/login", { message: ctx.flash("error") });
 });
 
-authRouter.get("/register", isNotAuthenticated, (ctx) => {
-    return ctx.render("partials/register", { message: ctx.flash.message });
+authRouter.get("/register", isNotAuthenticated, async (ctx) => {
+    await ctx.render("partials/register", { message: ctx.flash("error") });
 });
 
 authRouter.post("/register", async (ctx, next) => {
-    await passport.authenticate("register", (err, user, info) => {
+    await passport.authenticate("register", async (err, user, info) => {
         if (err) {
-            return next(err);
+            await next(err);
         }
-        if (!user) {
-            ctx.flash = {
-                type: "error",
-                message: info.message,
-            };
-            return ctx.redirect("/auth/login");
+        if (info) {
+            ctx.flash("error", info.message);
+            ctx.redirect("/auth/register");
         }
-        ctx.login(user, () => {
-            if (err) {
-                return next(err);
-            }
-
-            return ctx.redirect("/auth/register");
-        });
+        if (user) {
+            ctx.login(user);
+            ctx.redirect("/");
+        }
     })(ctx, next);
 });
 
-authRouter.get("/logout", isAuthenticated, (req, res, next) => {
-    const email = req.user.email;
-    req.logOut((err) => {
-        if (err) {
-            return next(err);
-        }
-        return res.render("partials/logout", { email });
-    });
+authRouter.get("/logout", isAuthenticated, async (ctx) => {
+    if (ctx.isAuthenticated()) {
+        await ctx.render("partials/logout", { email: ctx.state.user.email });
+        ctx.logout();
+    } else {
+        ctx.body = { success: false };
+        ctx.throw(401);
+    }
 });
 
 module.exports = authRouter;

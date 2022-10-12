@@ -6,20 +6,16 @@ class AppController {
         this.service = service;
     }
 
-    async getInfo(_req, res) {
+    async getInfo(ctx) {
+        console.log(Object.keys(ctx));
         const data = await this.service.getInfo();
-        return res.render("partials/info", { data: data });
+        console.log(data);
+        await ctx.render("partials/info", { data: data });
     }
 
     async home(ctx) {
-        console.log(ctx.state);
         const parsedData = await replace(ctx.state.user.email);
         ctx.body = parsedData;
-    }
-
-    async notFound(req, res) {
-        logger.warn(`Ruta: ${req.path} Metodo: ${req.method}`);
-        return res.status(404).json({ message: "page not found" });
     }
 }
 

@@ -80,7 +80,7 @@ loginBtn.addEventListener("click", (e) => {
 });
 
 logoutBtn.addEventListener("click", (e) => {
-    window.location = "/logout";
+    window.location = "/auth/logout";
 });
 
 socket.on("success", (data) => {

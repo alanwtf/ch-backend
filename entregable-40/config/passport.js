@@ -1,6 +1,7 @@
 const { verifyPassword, createHash } = require("../utils/isValidPassword");
 const UserService = require("../services/UserService");
-const { Strategy: LocalStrategy } = require("passport-local");
+
+const LocalStrategy = require("passport-local").Strategy;
 
 const userService = new UserService();
 

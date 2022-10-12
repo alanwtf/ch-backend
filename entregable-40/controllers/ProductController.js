@@ -7,36 +7,41 @@ class ProductController {
         this.service = service;
     }
 
-    async get(req, res) {
+    async get(ctx) {
         let datos;
-        if (req.params.id) datos = await this.service.getOne(req.params.id);
+        console.log(ctx.params.id);
+        if (ctx.params.id) datos = await this.service.getOne(ctx.params.id);
         else datos = await this.service.getAll();
-
-        return datos ? res.status(200).send(datos) : res.status(404).json({ message: "product not found" });
+        if (datos) {
+            ctx.body = datos;
+            console.log(datos);
+        } else {
+            ctx.throw(404);
+        }
     }
 
-    async createProduct(req, res) {
-        const product = await this.service.createProduct(req.body);
-        return res.status(201).json(product);
+    async createProduct(ctx) {
+        const product = await this.service.createProduct(ctx.request.body);
+        ctx.status = 201;
+        ctx.body = product;
     }
 
-    async createRandom(_req, res) {
-        const randomProducts = createRandomProducts(5);
-        return res.render("partials/products-table", {
-            productos: randomProducts,
-        });
+    async updateProduct(ctx) {
+        const prod = await this.service.updateProduct(ctx.params.id, ctx.request.body);
+        ctx.status = 201;
+        ctx.body = prod;
     }
+    async deleteProduct(ctx) {
+        console.log({ id: ctx.params.id });
 
-    async updateProduct(req, res) {
-        const prod = await this.service.updateProduct(req.params.id, req.body);
-        return res.sendStatus(204);
-    }
-    async deleteProduct(req, res) {
-        console.log({ id: req.params.id });
-
-        const isDeleted = await this.service.deleteProduct(req.params.id, req.body);
-        if (isDeleted) return res.sendStatus(204);
-        else return res.status(404).json({ error: "there was an error" });
+        const isDeleted = await this.service.deleteProduct(ctx.params.id);
+        if (isDeleted) {
+            ctx.status = 204;
+            ctx.body = "no content";
+        } else {
+            ctx.status = 404;
+            ctx.body = "not found";
+        }
     }
 }
 
