@@ -1,0 +1,14 @@
+[
+  {
+    "title": "asdas",
+    "price": "142",
+    "thumbnail": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/026.png",
+    "id": 1
+  },
+  {
+    "title": "asd",
+    "price": "123",
+    "thumbnail": "https://static.wikia.nocookie.net/espokemon/images/a/af/Jigglypuff.png/revision/latest?cb=20150110232910",
+    "id": 2
+  }
+]
